@@ -1,14 +1,15 @@
 package com.game.controller.utils;
 
-import com.game.controller.PlayerOrder;
 import com.game.entity.Profession;
 import com.game.entity.Race;
+import lombok.Getter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class TestsHelper {
     public final static String NORMAL_JSON =
             "{" +
@@ -175,10 +176,6 @@ public class TestsHelper {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-    }
-
-    public List<PlayerInfoTest> getAllPlayers() {
-        return allPlayers;
     }
 
 

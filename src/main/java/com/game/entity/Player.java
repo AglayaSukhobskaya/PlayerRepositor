@@ -1,7 +1,6 @@
 package com.game.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -24,5 +23,4 @@ public class Player {
     private Integer untilNextLevel;// = 50 * (level + 1) * (level + 2) - experience;
     private Date birthday;
     private Boolean banned;
-
 }

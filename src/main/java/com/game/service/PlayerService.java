@@ -10,13 +10,12 @@ import com.game.repository.PlayerRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -41,8 +40,8 @@ public class PlayerService {
         List<Player> players = (List<Player>) playerRepository.findAll();
         List<Player> playersList = new ArrayList<>();
         for (Player player : players) {
-            if (name != null) if (player.getName().indexOf(name) < 0) continue;
-            if (title != null) if (player.getTitle().indexOf(title) < 0) continue;
+            if (name != null) if (!player.getName().contains(name)) continue;
+            if (title != null) if (!player.getTitle().contains(title)) continue;
             if (race != null) if (!player.getRace().equals(race)) continue;
             if (profession != null) if (!player.getProfession().equals(profession)) continue;
             if (after != null) if (player.getBirthday().getTime() < after) continue;
@@ -55,13 +54,15 @@ public class PlayerService {
             playersList.add(player);
         }
 
-        if (order != null) {
-            if (order == PlayerOrder.NAME) Collections.sort(playersList,(o1, o2) -> o1.getName().compareTo(o2.getName()));
-            if (order == PlayerOrder.EXPERIENCE) Collections.sort(playersList, (o1, o2) -> o1.getExperience().compareTo(o2.getExperience()));
-            if (order == PlayerOrder.BIRTHDAY) Collections.sort(playersList, (o1, o2) -> o1.getBirthday().compareTo(o2.getBirthday()));
+        if (Objects.nonNull(order)) {
+            switch (order) {
+                case NAME: playersList.sort(Comparator.comparing(Player::getName));
+                case EXPERIENCE: playersList.sort(Comparator.comparing(Player::getExperience));
+                case BIRTHDAY: playersList.sort(Comparator.comparing(Player::getBirthday));
+            }
+        } else {
+            playersList.sort(Comparator.comparing(Player::getId));
         }
-        else
-            Collections.sort(playersList, (o1, o2) -> o1.getId().compareTo(o2.getId()));
 
         if (pageNumber == null) pageNumber = 0;
         if (pageSize == null) pageSize = 3;
@@ -83,8 +84,8 @@ public class PlayerService {
 
         Long count = 0L;
         for (Player player : playerRepository.findAll()) {
-            if (name != null) if (player.getName().indexOf(name) < 0) continue;
-            if (title != null) if (player.getTitle().indexOf(title) < 0) continue;
+            if (name != null) if (!player.getName().contains(name)) continue;
+            if (title != null) if (!player.getTitle().contains(title)) continue;
             if (race != null) if (!player.getRace().equals(race)) continue;
             if (profession != null) if (!player.getProfession().equals(profession)) continue;
             if (after != null) if (player.getBirthday().getTime() < after) continue;
@@ -115,11 +116,11 @@ public class PlayerService {
     }
 
     public Player getPlayer(Long id) {
-        return playerRepository.findById(id).orElseThrow(() -> new ExceptionsNOT_FOUND());
+        return playerRepository.findById(id).orElseThrow(ExceptionsNOT_FOUND::new);
     }
 
     public Player updatePlayer(Data data, Long id) {
-        Player player = playerRepository.findById(id).orElseThrow(() -> new ExceptionsNOT_FOUND());
+        Player player = playerRepository.findById(id).orElseThrow(ExceptionsNOT_FOUND::new);
         if (data.getName() != null) player.setName(data.getName());
         if (data.getTitle() != null) player.setTitle(data.getTitle());
         if (data.getBanned() != null) player.setBanned(data.getBanned());
@@ -136,7 +137,7 @@ public class PlayerService {
     }
 
     public void deletePlayer(Long id) {
-        Player player = playerRepository.findById(id).orElseThrow(() -> new ExceptionsNOT_FOUND());
+        playerRepository.findById(id).orElseThrow(ExceptionsNOT_FOUND::new);
         playerRepository.deleteById(id);
     }
 }

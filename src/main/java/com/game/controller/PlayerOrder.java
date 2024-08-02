@@ -1,5 +1,8 @@
 package com.game.controller;
 
+import lombok.Getter;
+
+@Getter
 public enum PlayerOrder {
     ID("id"), // default
     NAME("name"),
@@ -11,9 +14,5 @@ public enum PlayerOrder {
 
     PlayerOrder(String fieldName) {
         this.fieldName = fieldName;
-    }
-
-    public String getFieldName() {
-        return fieldName;
     }
 }
