@@ -7,6 +7,9 @@ import com.game.entity.Profession;
 import com.game.entity.Race;
 import com.game.exceptions.ExceptionsNOT_FOUND;
 import com.game.repository.PlayerRepository;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +19,10 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PlayerService {
-    @Autowired
-    private final PlayerRepository playerRepository;
-
-    public PlayerService(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
-    }
+    PlayerRepository playerRepository;
 
     public List<Player> getPlayerList(String name,
                                       String title,
